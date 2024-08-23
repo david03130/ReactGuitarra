@@ -7,6 +7,7 @@ function App() {
   const [data, setData] = useState(db);
   const [cart, setCart] = useState([]);
 
+  //#region Functions
   function handleAddToCart(item) {
     const existingItem = cart.find((x) => x.item.id === item.id);
 
@@ -16,13 +17,18 @@ function App() {
     else {
       // There's no point in cloning the array because the reference of the objects persists. 
       // The only thing that becomes a shallow copy is the actual array object.
-      existingItem.quantity++;
+      // Even then, we have to do it because the state setter calls a re-render. Otherwise we can't see the changes.
+      const newCart = [...cart];
+      newCart.find((x) => x.item.id === existingItem.item.id).quantity++;
+      setCart(newCart);
     }
   }
 
+  //#endregion
+
   return (
     <>
-      <Header />
+      <Header cart={cart} setCart={setCart} />
 
       <main className="container-xl mt-5">
         <h2 className="text-center">Nuestra Colección</h2>
